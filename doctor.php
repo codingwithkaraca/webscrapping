@@ -1,7 +1,9 @@
 <?php
 
+header('Content-Type: text/html; charset=utf-8');
+
 // aranacak il
-$term = 'Konya';
+$term = 'Antalya';
 
 $url = "https://www.doktortakvimi.com/ara?q=&loc=.$term";
 
@@ -15,25 +17,20 @@ curl_close($ch);
 // html sayfasının tümünde aranacak düzenli ifade
 preg_match_all('/result-name="([^"]+)"/', $html, $matches);
 
-$doctors = [] ;
+$doctors = [];
 
 // döngü ile doktor isimlerini alıp diziye atıyorum
 foreach ($matches[1] as $doctor_name) {
-
     $doctors[] = ['name' => $doctor_name];
-
-    // echo $doctor_name . "<br>";
 }
 
-// json tipine döndürme
-$json = json_encode($doctors);
-
+// json tipine döndürme ve türkçe karakterleri encode etme
+$json = json_encode($doctors, JSON_UNESCAPED_UNICODE);
 
 // dosyaya yazırma ve kapatma
 $file = fopen("doctors.json", "w") or die("Unable to open file!");
 fwrite($file, $json);
 fclose($file);
 
-
-
 ?>
+
